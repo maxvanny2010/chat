@@ -1,5 +1,7 @@
 package chat.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,7 +47,8 @@ public class Room {
     /**
      * field a messages.
      */
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,
             mappedBy = "room")
     private Set<Message> messages = new HashSet<>();
 
@@ -127,15 +130,6 @@ public class Room {
      **/
     public void setCreated(final LocalDateTime aCreated) {
         this.created = aCreated;
-    }
-
-    /**
-     * Method to check post.
-     *
-     * @return is new post or not
-     */
-    public boolean isNew() {
-        return Objects.isNull(this.id);
     }
 
     @Override
