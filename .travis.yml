@@ -1,0 +1,25 @@
+language: java
+jdk: openjdk14
+
+sudo: false
+
+install: true
+
+script: mvn clean package -DskipTests=true
+
+services:
+  - postgresql
+
+before_script:
+  - psql -c 'create database chat;' -U postgres
+
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+notifications:
+  email:
+    recipients:
+      - david.klarson@mail.ru
+    on_success: never
+    on_failure: always
