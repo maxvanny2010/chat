@@ -157,15 +157,6 @@ public class Message {
         this.created = aDateTime;
     }
 
-    /**
-     * Method to check post.
-     *
-     * @return is new post or not
-     */
-    public boolean isNew() {
-        return Objects.isNull(this.id);
-    }
-
     @Override
     public final String toString() {
         return new StringJoiner(", ",

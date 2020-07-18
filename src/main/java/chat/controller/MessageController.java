@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * MessageController.
@@ -72,14 +74,13 @@ public class MessageController {
         return answer;
     }
 
-    @DeleteMapping("/")
-    public ResponseEntity<Boolean> delete(@RequestParam("id") final int id,
-                                          @RequestParam("msgID") final int msgID) {
-        final var ok = new ResponseEntity<>(true, HttpStatus.OK);
-        final var not = new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
-        this.messages.deleteByRoomIdAndId(id, msgID);
-        final Message messages = this.messages.findById(msgID).orElse(null);
-        return messages != null ? not : ok;
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") final int id) {
+        final Optional<Message> message = this.messages.findById(id);
+        message.ifPresent(this.messages::delete);
+        return message.isPresent()
+                ? new ResponseEntity<>(HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
     }
 }

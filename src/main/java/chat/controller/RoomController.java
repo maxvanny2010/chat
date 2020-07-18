@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * ChatController.
@@ -51,13 +52,12 @@ public class RoomController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> remove(@PathVariable("id") final int id) {
-        final Room room = this.room.findById(id).orElse(null);
-        if (room != null) {
-            this.room.delete(room);
-            return new ResponseEntity<>(true, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+    public ResponseEntity<Void> remove(@PathVariable("id") final int id) {
+        final Optional<Room> room = this.room.findById(id);
+        room.ifPresent(this.room::delete);
+        return room.isPresent()
+                ? new ResponseEntity<>(HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/")
